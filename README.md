@@ -7,6 +7,7 @@ Případně lze aplikaci převést do exe (funkčnost ověřena). Návod je zde:
 
 
 ------------------------------------------------------English-----------------------------------------------------------------
+
 I'm not a programmer, so it's not perfect and a lot of things can be done differently. 
 I'd be glad for feedback and suggestions for improvements/expansions. 
 This is a GUI application/script written in powershell. Just run it on a PC with AD access and under a user with at least read permissions.
