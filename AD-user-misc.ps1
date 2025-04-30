@@ -1,3 +1,6 @@
+$adaccess = get-addomain | Select-Object -expand name
+if($null -ne $adaccess){
+
 #--------------------------------------viditelné jen GUI-----------------------------------------------#
 Add-Type -Name Window -Namespace Console -MemberDefinition '
 [DllImport("Kernel32.dll")]
@@ -271,7 +274,7 @@ $main_form.Controls.Add($button3menu1)
 $button3menu1.Add_Click(
 
 {
-
+$findtextboxmenu1.Items.Clear()
 $infotextBoxmenu1.Text= Get-ADUser -Identity $ComboBoxmenu1.selectedItem -Property * | Select-Object -Property * 
 $infotextBoxmenu1.Text=$infotextBoxmenu1.Text.Replace(";","`r`n")
 $infotextBoxmenu1.Text=$infotextBoxmenu1.Text.Replace("@{","")
@@ -376,6 +379,7 @@ $button5menu1.Add_Click(
 #==============================================================================================================================================================================#
 #==============================================================================================================================================================================#
 
+
 #-------------------------------------Department-menu-----------------------------------#
 $Labelmenu2 = New-Object System.Windows.Forms.Label
 
@@ -427,7 +431,7 @@ $infotextBoxmenu2.Add_KeyDown({
 $buttonmenu2 = New-Object System.Windows.Forms.Button
 $buttonmenu2.BackColor =”LightGray”
 $buttonmenu2.ForeColor = “black”
-$buttonmenu2.Location = New-Object System.Drawing.Size(210,60)
+$buttonmenu2.Location = New-Object System.Drawing.Size(210,65)
 
 $buttonmenu2.Size = New-Object System.Drawing.Size(160,23)
 
@@ -438,7 +442,7 @@ $main_form.Controls.Add($buttonmenu2)
 $buttonmenu2.Add_Click(
 
 {
-    
+    $findtextboxmenu2.Items.Clear()
     $infotextBoxmenu2.Text= Get-ADUser -filter * -Property department | Where-Object { $_.department -Like $ComboBoxmenu2.selectedItem } | Select-Object -Property sAMAccountName | Out-String | ForEach-Object { $_.Trim("`r","`n") }
     $infotextBoxmenu2.Text=$infotextBoxmenu2.Text.Replace("sAMAccountName","").Trim("`r","`n")
     $infotextBoxmenu2.Text=$infotextBoxmenu2.Text.Replace("--------------","").Trim("`r","`n")
@@ -460,7 +464,7 @@ $buttonmenu2.Add_Click(
 
 $findtextboxmenu2 = New-Object System.Windows.Forms.ComboBox 
 $findtextboxmenu2.ScrollBars="vertical"
-$findtextboxmenu2.Location = New-Object System.Drawing.Point(0,85)
+$findtextboxmenu2.Location = New-Object System.Drawing.Point(0,90)
 $findtextboxmenu2.Size = New-Object System.Drawing.Size(180,20)
 $main_form.Controls.Add($findtextboxmenu2)
 
@@ -473,7 +477,7 @@ $findtextboxmenu2.Add_KeyDown({
 $button2menu2 = New-Object System.Windows.Forms.Button
 $button2menu2.BackColor =”LightGray”
 $button2menu2.ForeColor = “black”
-$button2menu2.Location = New-Object System.Drawing.Size(210,85)
+$button2menu2.Location = New-Object System.Drawing.Size(210,90)
 
 $button2menu2.Size = New-Object System.Drawing.Size(160,23)
 
@@ -495,7 +499,7 @@ $button2menu2.Add_Click(
         
         }
      else{
-        [System.Windows.Forms.MessageBox]::Show("Nenalezeno")
+        (New-Object -ComObject Wscript.Shell -ErrorAction Stop).Popup("Nenalezeno",0,"Chyba",64)
      }    
     
 }
@@ -770,6 +774,190 @@ $potvrditmenu4.Add_Click(
 
 #==============================================================================================================================================================================#
 #==============================================================================================================================================================================#
+#                                                                             Práce se skupinami/menu5                                                                         #
+#==============================================================================================================================================================================#
+#==============================================================================================================================================================================#
+
+
+#-------------------------------------Groups-menu-----------------------------------#
+$Labelmenu5 = New-Object System.Windows.Forms.Label
+
+$Labelmenu5.Text = "Skupiny"
+
+$Labelmenu5.Location = New-Object System.Drawing.Point(0,10)
+
+$Labelmenu5.AutoSize = $true
+
+$main_form.Controls.Add($Labelmenu5)
+
+$ComboBoxmenu5 = New-Object System.Windows.Forms.ComboBox
+
+$ComboBoxmenu5.Width = 300
+
+$groups = Get-ADGroup -filter * | Select-Object -expand "Name"
+
+Foreach ($group in $groups)
+
+{
+
+$ComboBoxmenu5.Items.Add($group);
+
+}
+$ComboBoxmenu5.Location  = New-Object System.Drawing.Point(60,10)
+$ComboBoxmenu5.AutoCompleteSource = 'ListItems'
+$ComboBoxmenu5.AutoCompleteMode = 'Append'
+
+$comboboxchangemenu5= {
+    if($null -ne $ComboBox2menu5.selectedItem -and $ComboBoxmenu5.selectedItem -ne $null){
+        $ComboBox2menu5.selectedItem = $null
+    }
+}
+$ComboBoxmenu5.add_SelectedIndexChanged($comboboxchangemenu5)
+
+$main_form.Controls.Add($ComboBoxmenu5)
+
+
+#-------------------------------------user-menu-----------------------------------#
+$Label2menu5 = New-Object System.Windows.Forms.Label
+
+$Label2menu5.Text = "AD users"
+
+$Label2menu5.Location  = New-Object System.Drawing.Point(0,40)
+
+$Label2menu5.AutoSize = $true
+
+$main_form.Controls.Add($Label2menu5)
+
+$ComboBox2menu5 = New-Object System.Windows.Forms.ComboBox
+
+$ComboBox2menu5.Width = 300
+
+Foreach ($User in $Users)
+
+{
+
+$ComboBox2menu5.Items.Add($User.SamAccountName);
+
+}
+
+$ComboBox2menu5.Location  = New-Object System.Drawing.Point(60,40)
+$ComboBox2menu5.AutoCompleteSource = 'ListItems'
+$ComboBox2menu5.AutoCompleteMode = 'Append'
+
+$combobox2changemenu5= {
+if($null -ne $ComboBoxmenu5.selectedItem -and $ComboBox2menu5.selectedItem -ne $null){
+    $ComboBoxmenu5.selectedItem = $null
+}
+}
+$ComboBox2menu5.add_SelectedIndexChanged($combobox2changemenu5)
+
+$main_form.Controls.Add($ComboBox2menu5)
+
+
+#=========================================================================infobox-menu5===========================================================================================#
+
+$infotextBoxmenu5 = New-Object System.Windows.Forms.TextBox
+$infotextBoxmenu5.Multiline=$true 
+$infotextBoxmenu5.ReadOnly=$true
+$infotextBoxmenu5.ScrollBars="vertical"
+$infotextBoxmenu5.Location = New-Object System.Drawing.Point(5,120)
+$infotextBoxmenu5.Size = New-Object System.Drawing.Size(600,250)
+$main_form.Controls.Add($infotextBoxmenu5)
+$infotextBoxmenu5.Add_KeyDown({
+    if (($_.Control) -and ($_.KeyCode -eq 'A')) {
+       $infotextBoxmenu5.SelectAll()
+    }
+  })
+
+
+$buttonmenu5 = New-Object System.Windows.Forms.Button
+$buttonmenu5.BackColor =”LightGray”
+$buttonmenu5.ForeColor = “black”
+$buttonmenu5.Location = New-Object System.Drawing.Size(210,65)
+
+$buttonmenu5.Size = New-Object System.Drawing.Size(160,23)
+
+$buttonmenu5.Text = "Zobrazit výsledek"
+$buttonmenu5.Cursor="Hand"
+$main_form.Controls.Add($buttonmenu5)
+
+$buttonmenu5.Add_Click(
+
+{
+    $findtextboxmenu5.Items.Clear()
+    if ($null -ne $ComboBoxmenu5.selectedItem){
+    $infotextBoxmenu5.Text = Get-ADGroupMember -Identity $ComboBoxmenu5.selectedItem | Select-Object -expand "name" | Out-String | ForEach-Object { $_.Trim("`r","`n") }
+    $findtextboxmenu5.Items = $null
+    $lines = $infotextBoxmenu5.Lines
+    foreach ($line in $lines.Trim()){
+        $findtextboxmenu5.Items.Add($line);
+    }
+    $findtextboxmenu5.AutoCompleteSource = 'ListItems'
+    $findtextboxmenu5.AutoCompleteMode = 'Append'
+    }
+    elseif ($null -ne $ComboBox2menu5.selectedItem) {
+    $infotextBoxmenu5.Text =  Get-ADPrincipalGroupMembership $ComboBox2menu5.selectedItem | Select-Object -expand "name" | Out-String | ForEach-Object { $_.Trim("`r","`n") }
+
+    $lines = $infotextBoxmenu5.Lines
+    foreach ($line in $lines.Trim()){
+        $findtextboxmenu5.Items.Add($line);
+    }
+    $findtextboxmenu5.AutoCompleteSource = 'ListItems'
+    $findtextboxmenu5.AutoCompleteMode = 'Append'
+    }
+}
+
+)
+#=========================================================================find-menu5===========================================================================================#
+
+
+
+$findtextboxmenu5 = New-Object System.Windows.Forms.ComboBox 
+$findtextboxmenu5.ScrollBars="vertical"
+$findtextboxmenu5.Location = New-Object System.Drawing.Point(0,90)
+$findtextboxmenu5.Size = New-Object System.Drawing.Size(180,20)
+$main_form.Controls.Add($findtextboxmenu5)
+
+$findtextboxmenu5.Add_KeyDown({
+    if (($_.Control) -and ($_.KeyCode -eq 'A')) {
+       $findtextboxmenu5.SelectAll()
+    }
+  })
+
+$button2menu5 = New-Object System.Windows.Forms.Button
+$button2menu5.BackColor =”LightGray”
+$button2menu5.ForeColor = “black”
+$button2menu5.Location = New-Object System.Drawing.Size(210,90)
+
+$button2menu5.Size = New-Object System.Drawing.Size(160,23)
+
+$button2menu5.Text = "Vyhledat"
+$button2menu5.Cursor="Hand"
+$main_form.Controls.Add($button2menu5)
+
+$button2menu5.Add_Click(
+
+{
+    $pos = $infotextBoxmenu5.Text.IndexOf($findtextboxmenu5.text, [System.StringComparison]::OrdinalIgnoreCase)
+    if ($pos -ne -1) { 
+        $infotextBoxmenu5.SelectionStart = $pos
+        $infotextBoxmenu5.SelectionLength = $($($findtextboxmenu5.text).Length)
+        #$find=$infotextBoxmenu5.Select() 
+        
+        $infotextBoxmenu5.Focus()
+        $infotextBoxmenu5.ScrollToCaret()
+        
+        }
+     else{
+        (New-Object -ComObject Wscript.Shell -ErrorAction Stop).Popup("Nenalezeno",0,"Chyba",64)
+     }    
+    
+}
+
+)
+
+#==============================================================================================================================================================================#
+#==============================================================================================================================================================================#
 #                                                                             checkbox menu                                                                                    #
 #==============================================================================================================================================================================#
 #==============================================================================================================================================================================#
@@ -789,6 +977,7 @@ $checkBoxfork1.Add_CheckStateChanged({
         $checkBoxfork2.Checked=$false
         $checkBoxfork3.Checked=$false
         $checkBoxfork4.Checked=$false
+        $checkBoxfork5.Checked=$false
         Get-Variable *menu1*,*login* |  ForEach-Object{ ($_.Value).Visible = $true }
         $checkBoxfork1.Enabled=$false
     }
@@ -817,6 +1006,7 @@ $checkBoxfork2.Add_CheckStateChanged({
         $checkBoxfork1.Checked=$false
         $checkBoxfork3.Checked=$false
         $checkBoxfork4.Checked=$false
+        $checkBoxfork5.Checked=$false
         Get-Variable *menu2*,*login* |  ForEach-Object{ ($_.Value).Visible = $true }
         $checkBoxfork2.Enabled=$false
     }
@@ -827,7 +1017,7 @@ $checkBoxfork2.Add_CheckStateChanged({
     })
 
     $LabelcheckBoxfork2 = New-Object System.Windows.Forms.Label
-    $LabelcheckBoxfork2.Text="Už. ve skupinách"
+    $LabelcheckBoxfork2.Text="Už. v odděleních"
     $LabelcheckBoxfork2.Location  = New-Object System.Drawing.Point(444,40)
     $LabelcheckBoxfork2.AutoSize = $true
     $main_form.Controls.Add($LabelcheckBoxfork2)
@@ -844,6 +1034,7 @@ $checkBoxfork3.Add_CheckStateChanged({
         $checkBoxfork1.Checked=$false
         $checkBoxfork2.Checked=$false
         $checkBoxfork4.Checked=$false
+        $checkBoxfork5.Checked=$false
         Get-Variable *menu3*,*login* |  ForEach-Object{ ($_.Value).Visible = $true }
         $checkBoxfork3.Enabled=$false
     }
@@ -870,6 +1061,7 @@ $checkBoxfork4.Add_CheckStateChanged({
         $checkBoxfork1.Checked=$false
         $checkBoxfork2.Checked=$false
         $checkBoxfork3.Checked=$false
+        $checkBoxfork5.Checked=$false
         Get-Variable *menu4*,*login* |  ForEach-Object{ ($_.Value).Visible = $true }
         $checkBoxfork4.Enabled=$false
     }
@@ -884,5 +1076,36 @@ $checkBoxfork4.Add_CheckStateChanged({
     $LabelcheckBoxfork4.AutoSize = $true
     $main_form.Controls.Add($LabelcheckBoxfork4)
 
+    #============================================================================checkbox menu5====================================================================================#
+
+$checkBoxfork5 = New-Object System.Windows.Forms.CheckBox
+$checkBoxfork5.Location  = New-Object System.Drawing.Point(430,85)
+$checkBoxfork5.AutoSize=$true
+$checkBoxfork5.Cursor="Hand"
+$main_form.Controls.Add($checkBoxfork5)
+$checkBoxfork5.Add_CheckStateChanged({
+    if($checkBoxfork5.CheckState -eq "Checked"){
+        $checkBoxfork1.Checked=$false
+        $checkBoxfork2.Checked=$false
+        $checkBoxfork3.Checked=$false
+        $checkBoxfork4.Checked=$false
+        Get-Variable *menu5*,*login* |  ForEach-Object{ ($_.Value).Visible = $true }
+        $checkBoxfork5.Enabled=$false
+    }
+    else{
+        Get-Variable *menu5*,*login* |  ForEach-Object{ ($_.Value).Visible = $false }
+        $checkBoxfork5.Enabled=$true
+    }
+    }) 
+    $LabelcheckBoxfork5 = New-Object System.Windows.Forms.Label
+    $LabelcheckBoxfork5.Text="Práce se skupinami"
+    $LabelcheckBoxfork5.Location  = New-Object System.Drawing.Point(444,85)
+    $LabelcheckBoxfork5.AutoSize = $true
+    $main_form.Controls.Add($LabelcheckBoxfork5)
 
 $main_form.ShowDialog()
+
+}
+else{
+(New-Object -ComObject Wscript.Shell -ErrorAction Stop).Popup("Chyba. Nemáte přístup, nebo oprávnění k AD. Doinstalujte AD Tool (Uživatelé a počítače služby Active Directory), požádejte o oprávnění, nebo se připojte do firemní sítě.",0,"Chyba",16)
+}
