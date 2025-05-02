@@ -16,7 +16,7 @@ $consolePtr = [Console.Window]::GetConsoleWindow()
 #---------------------------------okno--------------------------------------#
 Add-Type -assembly System.Windows.Forms
 $main_form = New-Object System.Windows.Forms.Form
-
+$main_form.Toplevel = $true
 $main_form.Text ='AD account management'
 $main_form.BackColor = “black”
 $main_form.ForeColor = “white”
@@ -59,6 +59,7 @@ $Buttonlogin.Add_Click(
 if ($Buttonlogin.Text -eq "AD login"){
 Do {
 $Script:Cred = Get-Credential -Message "Váš AD účet"
+$main_form.Toplevel = $true
 
 if($null -ne $Cred){
    #Get-ADUser -Credential $Cred -Properties LockedOut   
