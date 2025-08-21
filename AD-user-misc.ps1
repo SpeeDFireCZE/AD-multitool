@@ -649,12 +649,18 @@ $potvrditmenu3.Add_Click(
         $noveheslomenu3_secure= ConvertTo-SecureString -String $noveheslomenu3.Text -AsPlainText -Force
         $stareheslomenu3_secure= ConvertTo-SecureString -String $stareheslomenu3.Text -AsPlainText -Force
 
-        #Set-ADAccountPassword -Identity $uzivatelmenu3.text -OldPassword $stareheslomenu3_secure -NewPassword $noveheslomenu3_secure 3>&1 2>&1 | 
-        $outputmenu3 = try{Set-ADAccountPassword -Identity $uzivatelmenu3.text -OldPassword $stareheslomenu3_secure -NewPassword $noveheslomenu3_secure *>&1}catch{$_}
+        
+        $outputmenu3 = try{
+	 Set-ADAccountPassword -Identity $uzivatelmenu3.text -OldPassword $stareheslomenu3_secure -NewPassword $noveheslomenu3_secure -ErrorAction Stop
+		"Heslo bylo úspěšně změněno."
+	} catch {
+		"Chyba: $($_.Exception.Message)"
+	}
 
-        #Set-ADAccountPassword -Identity $uzivatelmenu3.text -OldPassword $stareheslomenu3_secure -NewPassword $noveheslomenu3_secure
+       
 
-        $infotextBoxmenu3.Text=$outputmenu3
+        $infotextBoxmenu3.Text = $outputmenu3
+        (New-Object -ComObject Wscript.Shell -ErrorAction Stop).Popup("$outputmenu3",0,"Výsledek",64)
 
     }
 
@@ -765,14 +771,17 @@ $potvrditmenu4.Add_Click(
     }
     else{
 
-        $noveheslomenu4_secure= ConvertTo-SecureString -String $noveheslomenu4.Text -AsPlainText -Force
+      $noveheslomenu4_secure = ConvertTo-SecureString -String $noveheslomenu4.Text -AsPlainText -Force
 
-        #Set-ADAccountPassword -Identity $uzivatelmenu4.text -OldPassword $stareheslomenu4_secure -NewPassword $noveheslomenu4_secure 3>&1 2>&1 | 
-        $outputmenu4 = try{Set-ADAccountPassword -Credential $Cred -Identity $ComboBoxmenu4.text -NewPassword $noveheslomenu4_secure *>&1}catch{$_}
+        $outputmenu4 = try {
+        Set-ADAccountPassword -Credential $Cred -Identity $ComboBoxmenu4.Text -NewPassword $noveheslomenu4_secure -ErrorAction Stop
+            "Heslo bylo úspěšně změněno."
+        } catch {
+            "Chyba: $($_.Exception.Message)"
+        }
 
-        #Set-ADAccountPassword -Identity $uzivatelmenu4.text -OldPassword $stareheslomenu4_secure -NewPassword $noveheslomenu4_secure
-
-        $infotextBoxmenu4.Text=$outputmenu4
+        $infotextBoxmenu4.Text = $outputmenu4
+        (New-Object -ComObject Wscript.Shell -ErrorAction Stop).Popup("$outputmenu4",0,"Výsledek",64)
 
     }
 }
