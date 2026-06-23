@@ -57,6 +57,7 @@ function Show-Popup {
     $cw = 380
     $ch = [Math]::Min([Math]::Max($sz.Height + 96, 130), 500)
     $f = New-Object System.Windows.Forms.Form
+    $f.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::None
     $f.Text = $title
     $f.FormBorderStyle = 'FixedDialog'
     $f.MaximizeBox = $false; $f.MinimizeBox = $false; $f.ShowInTaskbar = $false
@@ -448,6 +449,7 @@ try { [void][Win32.DarkMode]::SetPreferredAppMode(2) } catch {}
 #region Splash – načítání AD dat na pozadí
 $Script:spinAngle = 0
 $splash = New-Object System.Windows.Forms.Form
+$splash.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::None
 $splash.FormBorderStyle = 'None'
 $splash.StartPosition = 'CenterScreen'
 $splash.Size = New-Object System.Drawing.Size(340, 150)
@@ -541,10 +543,11 @@ if (-not $Script:adOk) {
 
 #region Form
 $main_form = New-Object System.Windows.Forms.Form
+$main_form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::None
 $main_form.Text = 'AD account management'
 $main_form.BackColor = $bgForm
 $main_form.ForeColor = $clrText
-$main_form.Size = New-Object System.Drawing.Size(680, 570)
+$main_form.ClientSize = New-Object System.Drawing.Size(664, 531)
 $main_form.MaximizeBox = $false
 $main_form.FormBorderStyle = 'FixedSingle'
 $main_form.StartPosition = 'CenterScreen'
@@ -559,7 +562,7 @@ $main_form.Controls.Add($sep)
 #endregion
 
 #region Login
-$Buttonlogin = New-Btn 'AD Login' 548 5 115 24
+$Buttonlogin = New-Btn 'AD Login' 539 5 115 24
 $Buttonlogin.Tag = $bgBtnDanger
 $main_form.Controls.Add($Buttonlogin)
 
@@ -588,7 +591,7 @@ $Buttonlogin.Add_Click({
 #endregion
 
 #region Obnova AD dat za běhu (bez restartu aplikace)
-$btnReload = New-Btn 'Znovunačtení dat' 425 5 115 24
+$btnReload = New-Btn 'Znovunačtení dat' 416 5 115 24
 $main_form.Controls.Add($btnReload)
 $btnReload.Add_Click({
     if ($null -ne $Script:reloadTimer -and $Script:reloadTimer.Enabled) { return }
@@ -697,14 +700,14 @@ $tabBorderCoverTop.BringToFront()
 #                                                             Tab1 – Uživatel                                                                                                  #
 #==============================================================================================================================================================================#
 
-$Labelmenu1    = New-Lbl 'AD users' 0 12
-$ComboBoxmenu1 = New-Combo 60 8 595
+$Labelmenu1    = New-Lbl 'AD users' 10 12
+$ComboBoxmenu1 = New-Combo 66 8 588
 $ComboBoxmenu1.BeginUpdate(); if ($Script:UserNames.Count -gt 0) { $ComboBoxmenu1.Items.AddRange([object[]]$Script:UserNames) }; $ComboBoxmenu1.EndUpdate()
 $tabPage1.Controls.AddRange(@($Labelmenu1, $ComboBoxmenu1))
 
-$Label2menu1  = New-Lbl 'Poslední změna hesla:' 0 42
-$Label3menu1  = New-Lbl '' 120 42
-$Buttonmenu1  = New-Btn 'zkontrolovat poslední změnu' 215 38 440
+$Label2menu1  = New-Lbl 'Poslední změna hesla:' 10 42
+$Label3menu1  = New-Lbl '' 140 42
+$Buttonmenu1  = New-Btn 'zkontrolovat poslední změnu' 232 38 422
 $tabPage1.Controls.AddRange(@($Label2menu1, $Label3menu1, $Buttonmenu1))
 
 $Buttonmenu1.Add_Click({
@@ -715,9 +718,9 @@ $Buttonmenu1.Add_Click({
     } catch { Show-Popup "Chyba: $($_.Exception.Message)" 'Chyba' }
 })
 
-$Label4menu1  = New-Lbl 'Uzamčeno/odemčeno:' 0 70
-$Label5menu1  = New-Lbl '' 125 70
-$button2menu1 = New-Btn 'Odemknout účet' 215 66 440
+$Label4menu1  = New-Lbl 'Uzamčeno/odemčeno:' 10 70
+$Label5menu1  = New-Lbl '' 143 70
+$button2menu1 = New-Btn 'Odemknout účet' 232 66 422
 $tabPage1.Controls.AddRange(@($Label4menu1, $Label5menu1, $button2menu1))
 
 $button2menu1.Add_Click({
@@ -754,13 +757,13 @@ $button2menu1.Add_Click({
     $Script:unlockTimer.Start()
 })
 
-$button3menu1    = New-Btn 'Získat kompletní info' 5 93 650
-$findtextboxmenu1 = New-Combo 5 123 180
-$button4menu1    = New-Btn 'Vyhledat v kompletním infu' 215 121 440
-$timedecodeboxmenu1 = New-Inp 5 151 180
-$button5menu1    = New-Btn 'Dešifrovat čas z infa' 215 149 440
+$button3menu1    = New-Btn 'Získat kompletní info' 10 93 644
+$findtextboxmenu1 = New-Combo 10 123 180
+$button4menu1    = New-Btn 'Vyhledat v kompletním infu' 232 121 422
+$timedecodeboxmenu1 = New-Inp 10 151 180
+$button5menu1    = New-Btn 'Dešifrovat čas z infa' 232 149 422
 
-$infotextBoxmenu1 = New-Out 5 179 650 280
+$infotextBoxmenu1 = New-Out 10 179 644 280
         
 $tabPage1.Controls.AddRange(@($button3menu1, $findtextboxmenu1, $button4menu1, $timedecodeboxmenu1, $button5menu1, $infotextBoxmenu1))
 
@@ -801,14 +804,14 @@ $button5menu1.Add_Click({
 #                                                             Tab2 – Oddělení                                                                                                  #
 #==============================================================================================================================================================================#
 
-$Labelmenu2    = New-Lbl 'Oddělení' 0 12
-$ComboBoxmenu2 = New-Combo 60 8 595
+$Labelmenu2    = New-Lbl 'Oddělení' 10 12
+$ComboBoxmenu2 = New-Combo 66 8 588
 $ComboBoxmenu2.BeginUpdate(); if ($Script:Departments.Count -gt 0) { $ComboBoxmenu2.Items.AddRange([object[]]$Script:Departments) }; $ComboBoxmenu2.EndUpdate()
-$buttonmenu2   = New-Btn 'Zobrazit už. v oddělení' 215 38 440
-$findtextboxmenu2 = New-Combo 5 68 180
-$button2menu2  = New-Btn 'Vyhledat' 215 66 440
+$buttonmenu2   = New-Btn 'Zobrazit už. v oddělení' 232 38 422
+$findtextboxmenu2 = New-Combo 10 68 180
+$button2menu2  = New-Btn 'Vyhledat' 232 66 422
 
-$infotextBoxmenu2 = New-Out 5 98 650 360
+$infotextBoxmenu2 = New-Out 10 98 644 360
         
 $tabPage2.Controls.AddRange(@($Labelmenu2, $ComboBoxmenu2, $buttonmenu2, $findtextboxmenu2, $button2menu2, $infotextBoxmenu2))
 
@@ -840,17 +843,17 @@ $button2menu2.Add_Click({
 #                                                             Tab3 – Změna hesla (uživatel)                                                                                    #
 #==============================================================================================================================================================================#
 
-$Labelmenu3      = New-Lbl 'Staré heslo:' 0 12
-$stareheslomenu3 = New-Inp 80 8 180; $stareheslomenu3.PasswordChar = '*'
-$checkBoxmenu3   = New-Chk 'Zobrazit' 270 10
-$Label2menu3     = New-Lbl 'Nové heslo:' 0 40
-$noveheslomenu3  = New-Inp 80 36 180; $noveheslomenu3.PasswordChar = '*'
-$checkBox2menu3  = New-Chk 'Zobrazit' 270 38
-$Label3menu3     = New-Lbl 'Uživatel:' 0 68
-$uzivatelmenu3   = New-Inp 80 64 180
-$potvrditmenu3   = New-Btn "Potvrdit" 5 100 650
+$Labelmenu3      = New-Lbl 'Staré heslo:' 10 12
+$stareheslomenu3 = New-Inp 90 8 180; $stareheslomenu3.PasswordChar = '*'
+$checkBoxmenu3   = New-Chk 'Zobrazit' 282 10
+$Label2menu3     = New-Lbl 'Nové heslo:' 10 40
+$noveheslomenu3  = New-Inp 90 36 180; $noveheslomenu3.PasswordChar = '*'
+$checkBox2menu3  = New-Chk 'Zobrazit' 282 38
+$Label3menu3     = New-Lbl 'Uživatel:' 10 68
+$uzivatelmenu3   = New-Inp 90 64 180
+$potvrditmenu3   = New-Btn "Potvrdit" 10 100 644
 
-$infotextBoxmenu3 = New-Out 5 135 650 325
+$infotextBoxmenu3 = New-Out 10 135 644 325
         
 $tabPage3.Controls.AddRange(@($Labelmenu3, $stareheslomenu3, $checkBoxmenu3, $Label2menu3, $noveheslomenu3, $checkBox2menu3, $Label3menu3, $uzivatelmenu3, $potvrditmenu3, $infotextBoxmenu3))
 
@@ -875,15 +878,15 @@ $potvrditmenu3.Add_Click({
 #                                                             Tab4 – Admin reset hesla                                                                                         #
 #==============================================================================================================================================================================#
 
-$Labelmenu4    = New-Lbl 'Uživatel:' 0 12
-$ComboBoxmenu4 = New-Combo 60 8 595
+$Labelmenu4    = New-Lbl 'Uživatel:' 10 12
+$ComboBoxmenu4 = New-Combo 66 8 588
 $ComboBoxmenu4.BeginUpdate(); if ($Script:UserNames.Count -gt 0) { $ComboBoxmenu4.Items.AddRange([object[]]$Script:UserNames) }; $ComboBoxmenu4.EndUpdate()
-$Label2menu4     = New-Lbl 'Nové heslo:' 0 40
-$noveheslomenu4  = New-Inp 80 36 180; $noveheslomenu4.PasswordChar = '*'
-$checkBox2menu4  = New-Chk 'Zobrazit' 270 38
-$potvrditmenu4   = New-Btn "Potvrdit" 5 70 650
+$Label2menu4     = New-Lbl 'Nové heslo:' 10 40
+$noveheslomenu4  = New-Inp 90 36 180; $noveheslomenu4.PasswordChar = '*'
+$checkBox2menu4  = New-Chk 'Zobrazit' 282 38
+$potvrditmenu4   = New-Btn "Potvrdit" 10 70 644
 
-$infotextBoxmenu4 = New-Out 5 105 650 355
+$infotextBoxmenu4 = New-Out 10 105 644 355
         
 $tabPage4.Controls.AddRange(@($Labelmenu4, $ComboBoxmenu4, $Label2menu4, $noveheslomenu4, $checkBox2menu4, $potvrditmenu4, $infotextBoxmenu4))
 
@@ -906,24 +909,24 @@ $potvrditmenu4.Add_Click({
 #                                                             Tab5 – Skupiny                                                                                                   #
 #==============================================================================================================================================================================#
 
-$Labelmenu5    = New-Lbl 'Skupiny' 0 12
-$ComboBoxmenu5 = New-Combo 60 8 595
+$Labelmenu5    = New-Lbl 'Skupiny' 10 12
+$ComboBoxmenu5 = New-Combo 66 8 588
 $ComboBoxmenu5.BeginUpdate(); if ($Script:Groups.Count -gt 0) { $ComboBoxmenu5.Items.AddRange([object[]]$Script:Groups) }; $ComboBoxmenu5.EndUpdate()
 $ComboBoxmenu5.add_SelectedIndexChanged({
     if ($null -ne $ComboBoxmenu5.selectedItem -and $null -ne $ComboBox2menu5.selectedItem) { $ComboBox2menu5.selectedItem = $null }
 })
 
-$Label2menu5    = New-Lbl 'AD users' 0 40
-$ComboBox2menu5 = New-Combo 60 36 595
+$Label2menu5    = New-Lbl 'AD users' 10 40
+$ComboBox2menu5 = New-Combo 66 36 588
 $ComboBox2menu5.BeginUpdate(); if ($Script:UserNames.Count -gt 0) { $ComboBox2menu5.Items.AddRange([object[]]$Script:UserNames) }; $ComboBox2menu5.EndUpdate()
 $ComboBox2menu5.add_SelectedIndexChanged({
     if ($null -ne $ComboBoxmenu5.selectedItem -and $null -ne $ComboBox2menu5.selectedItem) { $ComboBoxmenu5.selectedItem = $null }
 })
 
-$buttonmenu5      = New-Btn 'Zobrazit výsledek' 215 66 440
-$findtextboxmenu5 = New-Combo 5 98 180
-$button2menu5     = New-Btn 'Vyhledat' 215 96 440
-$infotextBoxmenu5 = New-Out 5 128 650 330
+$buttonmenu5      = New-Btn 'Zobrazit výsledek' 232 66 422
+$findtextboxmenu5 = New-Combo 10 98 180
+$button2menu5     = New-Btn 'Vyhledat' 232 96 422
+$infotextBoxmenu5 = New-Out 10 128 644 330
         
 $tabPage5.Controls.AddRange(@($Labelmenu5, $ComboBoxmenu5, $Label2menu5, $ComboBox2menu5, $buttonmenu5, $findtextboxmenu5, $button2menu5, $infotextBoxmenu5))
 
