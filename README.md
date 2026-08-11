@@ -1,3 +1,5 @@
+# AD multitool
+## od verze 1.0.8 pomáhá AI
 Nejsem programátor, tudíž to není dokonalé a spousta věcí lze udělat jinak. 
 Za reakci a návrhy na zlepšení/rozšíření budu rád. 
 Jedná se o GUI aplikaci/script napsanou v powershellu. Stačí spustit na PC s přístupem k AD a pod uživatelem alespoň s read oprávněním.
